@@ -1,0 +1,93 @@
+/* Estilizando os rótulos, incluindo "Vaga:" para preto */
+.form-group label, 
+label, 
+.form-label {
+  color: black; /* Garantindo que todos os rótulos, incluindo "Vaga:", tenham a cor preta */
+}
+
+/* Restante do CSS permanece o mesmo */
+#formularioCandidato {
+  margin-left: 110px;
+  transition: margin-left 0.5s linear;
+}
+
+#formularioCandidato.expanded {
+  margin-left: 230px;
+}
+
+#cadastrar {
+  margin-right: 50px;
+}
+
+#pesquisar {
+  margin-top: 41px;
+  margin-left: 10px;
+}
+
+.form--wrapper {
+  padding: 20px;
+  background-color: #eeeeee;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.section-title h2.fw-bold {
+  color: #60a5fa;
+  font-weight: bold;
+}
+
+.section-title {
+  max-width: 600px;
+}
+
+.section-title h2 {
+  font-size: 25px;
+}
+
+.icone {
+  font-size: 2rem;
+}
+
+.borda-form {
+  border-left: 5px solid #60a5fa;
+  padding-left: 10px;
+}
+
+.borda-form2 {
+  border-left: 5px solid #60a5fa;
+  padding-left: 10px;
+}
+
+.btn-adicionar {
+  background-color: green;
+  color: white;
+}
+
+.centraliza {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+#mensagem {
+  margin-top: 15px;
+  margin-left: 0px;
+}
+
+.botoes {
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+}
