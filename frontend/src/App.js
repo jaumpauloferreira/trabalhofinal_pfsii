@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Login from './COMPONENTES/LOGIN/Login';
 import ComponenteMenu from "./COMPONENTES/MENU/ComponenteMenu";
-import TabelaInscricoes from './COMPONENTES/JOAO/TabelaInscricoes';
+import TabelaInscricoes from './COMPONENTES/FORMULARIOS/TabelaInscricoes';
 import DevsPage from './COMPONENTES/DevsPage'; 
 
 function App() {
