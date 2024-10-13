@@ -27,7 +27,7 @@ class Inscricao {
                 params.push(cpf);
             } else if (nome) {
                 sql += ` WHERE candidato.nome LIKE ?`;
-                params.push(`%${nome}%`); // Utiliza LIKE para busca parcial por nome
+                params.push(`%${nome}%`); 
             }
 
             const result = await banco.ExecutaComando(sql, params);

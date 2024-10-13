@@ -15,7 +15,7 @@
 }
 
 .azul {
-  background-color: #2563eb; /* Azul consistente com o tema */
+  background-color: #2563eb; 
   color: white;
   text-align: center;
   font-weight: bold;
@@ -23,7 +23,7 @@
 
 .texto {
   text-align: center;
-  color: #374151; /* Cor suave para o texto */
+  color: #374151; 
 }
 
 .centraliza {
@@ -70,7 +70,7 @@
 }
 
 input[type="text"] {
-  border: 2px solid #2563eb; /* Cor de destaque no input */
+  border: 2px solid #2563eb; 
   border-radius: 8px;
   padding: 0.5rem;
   width: 100%;
@@ -89,7 +89,7 @@ input[type="text"] {
 }
 
 input[type="text"]::placeholder {
-  color: #6b7280; /* Cor suave para o placeholder */
+  color: #6b7280; 
 }
 
 #pesquisar {

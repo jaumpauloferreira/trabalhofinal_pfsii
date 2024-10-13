@@ -1,11 +1,9 @@
-/* Estilizando os rótulos, incluindo "Vaga:" para preto */
 .form-group label, 
 label, 
 .form-label {
-  color: black; /* Garantindo que todos os rótulos, incluindo "Vaga:", tenham a cor preta */
+  color: black; 
 }
 
-/* Restante do CSS permanece o mesmo */
 #formularioCandidato {
   margin-left: 110px;
   transition: margin-left 0.5s linear;

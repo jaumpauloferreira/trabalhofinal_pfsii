@@ -12,7 +12,7 @@ function Login({ onLogin }) {
     let senha = document.getElementById('senha').value;
 
     if (usuario === 'admin' && senha === 'admin') {
-      setErrorMessage(''); // Limpa mensagem de erro
+      setErrorMessage(''); 
       navigate('/inscricoes');
       onLogin();
     } else {

@@ -1,6 +1,6 @@
 import "./TabelaInscricoes.css";
 import InscricaoService from '../../SERVICES/inscricoesService.js';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import InscreverCandidato from "./InscreverCandidato.jsx";
 
 const inscricaoService = new InscricaoService();
@@ -10,7 +10,6 @@ function TabelaInscricoes({ isMenuExpanded }) {
   const [searchInput, setSearchInput] = useState('');
   const [searchType, setSearchType] = useState('cpf'); // Estado para o tipo de pesquisa (CPF ou Nome)
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
   const [candidatos, setCandidatos] = useState([{
     cpf: 0,
     nome: "Nenhum candidato encontrado"
@@ -20,11 +19,34 @@ function TabelaInscricoes({ isMenuExpanded }) {
     cargo: "Nenhuma vaga encontrada"
   }]);
 
+  const handleSetError = (message) => {
+    setError(message);
+    setTimeout(() => setError(null), 5000);
+  };
+
+  const buscarCandidatos = useCallback(() => {
+    fetchWithErrorHandling('http://localhost:4000/candidatos')
+      .then(data => setCandidatos(data.listaCandidatos || []))
+      .catch(error => handleSetError("Erro ao recuperar candidatos: " + error.message));
+  }, []);
+
+  const buscarVagas = useCallback(() => {
+    fetchWithErrorHandling('http://localhost:4000/vagas')
+      .then(data => setVagas(data.listaVagas || []))
+      .catch(error => handleSetError("Erro ao recuperar vagas: " + error.message));
+  }, []);
+
+  const buscarInscricoes = useCallback(() => {
+    fetchWithErrorHandling('http://localhost:4000/inscricoes')
+      .then(data => setInscricoes(data.listaInscricoes || []))
+      .catch(error => handleSetError("Erro ao recuperar inscrições: " + error.message));
+  }, []);
+
   useEffect(() => {
     buscarCandidatos();
     buscarVagas();
     buscarInscricoes();
-  }, []);
+  }, [buscarCandidatos, buscarVagas, buscarInscricoes]);
 
   const fetchWithErrorHandling = async (url) => {
     try {
@@ -38,35 +60,7 @@ function TabelaInscricoes({ isMenuExpanded }) {
     }
   };
 
-  function buscarCandidatos() {
-    fetchWithErrorHandling('http://localhost:4000/candidatos')
-      .then(data => setCandidatos(data.listaCandidatos || []))
-      .catch(error => {
-        setError("Erro ao recuperar candidatos: " + error.message);
-        setCandidatos([]);
-      });
-  }
-
-  function buscarVagas() {
-    fetchWithErrorHandling('http://localhost:4000/vagas')
-      .then(data => setVagas(data.listaVagas || []))
-      .catch(error => {
-        setError("Erro ao recuperar vagas: " + error.message);
-        setVagas([]);
-      });
-  }
-
-  function buscarInscricoes() {
-    fetchWithErrorHandling('http://localhost:4000/inscricoes')
-      .then(data => setInscricoes(data.listaInscricoes || []))
-      .catch(error => {
-        setError("Erro ao recuperar inscrições: " + error.message);
-        setInscricoes([]);
-      });
-  }
-
-  // Função para restaurar a tabela de inscrições
-  const handleRestaurarTabela = async () => {
+  const handleRestaurarTabela = () => {
     setSearchInput(''); // Limpar o campo de pesquisa
     buscarInscricoes(); // Recarregar todas as inscrições
   };
@@ -74,8 +68,7 @@ function TabelaInscricoes({ isMenuExpanded }) {
   // Função para buscar por CPF ou Nome com base na seleção
   const handleFiltrar = async () => {
     try {
-      // Limpa as inscrições anteriores antes de realizar uma nova busca
-      setInscricoes([]);
+      setInscricoes([]); // Limpa as inscrições antes de uma nova busca
 
       if (!searchInput) {
         buscarInscricoes();
@@ -85,27 +78,19 @@ function TabelaInscricoes({ isMenuExpanded }) {
       let matriculasFiltradas;
 
       if (searchType === 'cpf') {
-        // Filtrar por CPF
         matriculasFiltradas = await inscricaoService.filtrar({ cpf: searchInput });
       } else if (searchType === 'nome') {
-        // Filtrar por Nome
         matriculasFiltradas = await inscricaoService.filtrar({ nome: searchInput });
       }
 
       if (matriculasFiltradas.length === 0) {
-        setError('Candidato não encontrado. Verifique o CPF ou nome e tente novamente.');
-        setTimeout(() => {
-          setError(null);
-        }, 5000);
+        handleSetError('Candidato não encontrado. Verifique o CPF ou nome e tente novamente.');
       } else {
         setInscricoes(matriculasFiltradas);
       }
     } catch (error) {
       console.error('Erro ao filtrar matrículas:', error);
-      setError('Erro ao filtrar matrículas. Tente novamente mais tarde.');
-      setTimeout(() => {
-        setError(null);
-      }, 5000);
+      handleSetError('Erro ao filtrar matrículas. Tente novamente mais tarde.');
     }
   };
 
@@ -115,12 +100,8 @@ function TabelaInscricoes({ isMenuExpanded }) {
         <div className="form--wrapper">
           <InscreverCandidato onNewInscricao={buscarInscricoes} />
           <div id='mensagem'>
-            {successMessage && (
-              <div className="alert alert-success" role="alert">
-                <div className='centraliza'>
-                  {successMessage}
-                </div>
-              </div>
+            {error && (
+              <div className="alert alert-danger ml-4" role="alert">{error}</div>
             )}
           </div>
           <div className="row">
@@ -140,7 +121,7 @@ function TabelaInscricoes({ isMenuExpanded }) {
                   <select
                     id="tipoPesquisa"
                     className="form-select"
-                    style={{ maxWidth: '150px' }} 
+                    style={{ maxWidth: '150px' }}
                     value={searchType}
                     onChange={(event) => setSearchType(event.target.value)}
                   >
@@ -170,37 +151,35 @@ function TabelaInscricoes({ isMenuExpanded }) {
                 Restaurar Tabela
               </button>
             </div>
-            {error && <div className="alert alert-danger ml-4" role="alert">{error}</div>}
-            {inscricoes.length === 0 ? (
-              <div className="alert alert-danger ml-4 text-center mx-auto" role="alert">
-                ERRO: Não foi possível buscar a lista de inscritos no backend!
-              </div>
-
-            ) : (
-              <table className="table table-striped table-hover table-bordered">
-                <thead className="azul">
-                  <tr>
-                    <th scope="col">CPF</th>
-                    <th scope="col">Candidato</th>
-                    <th scope="col">Vaga</th>
-                    <th scope="col">Salário</th>
-                    <th scope="col">Data da inscrição</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inscricoes.map(inscricao => (
-                    <tr key={inscricao.cand_cpf}>
-                      <td className="texto">{inscricao.cand_cpf}</td>
-                      <td className="texto">{candidatos.find(c => c.cpf === inscricao.cand_cpf)?.nome || 'Desconhecido'}</td>
-                      <td className="texto">{vagas.find(v => v.codigo === inscricao.vaga_codigo)?.cargo || 'Desconhecido'}</td>
-                      <td className="texto">R$ {vagas.find(v => v.codigo === inscricao.vaga_codigo)?.salario || 'Desconhecido'}</td>
-                      <td className="texto">{inscricao.data_inscricao}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
           </div>
+          {inscricoes.length === 0 ? (
+            <div className="alert alert-danger ml-4 text-center mx-auto" role="alert">
+              ERRO: Não foi possível buscar a lista de inscritos no backend!
+            </div>
+          ) : (
+            <table className="table table-striped table-hover table-bordered">
+              <thead className="azul">
+                <tr>
+                  <th scope="col">CPF</th>
+                  <th scope="col">Candidato</th>
+                  <th scope="col">Vaga</th>
+                  <th scope="col">Salário</th>
+                  <th scope="col">Data da inscrição</th>
+                </tr>
+              </thead>
+              <tbody>
+                {inscricoes.map(inscricao => (
+                  <tr key={inscricao.cand_cpf}>
+                    <td className="texto">{inscricao.cand_cpf}</td>
+                    <td className="texto">{candidatos.find(c => c.cpf === inscricao.cand_cpf)?.nome || 'Desconhecido'}</td>
+                    <td className="texto">{vagas.find(v => v.codigo === inscricao.vaga_codigo)?.cargo || 'Desconhecido'}</td>
+                    <td className="texto">R$ {vagas.find(v => v.codigo === inscricao.vaga_codigo)?.salario || 'Desconhecido'}</td>
+                    <td className="texto">{inscricao.data_inscricao}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
@@ -208,3 +187,4 @@ function TabelaInscricoes({ isMenuExpanded }) {
 }
 
 export default TabelaInscricoes;
+

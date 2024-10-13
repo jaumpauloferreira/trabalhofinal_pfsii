@@ -30,7 +30,6 @@ app.use("/vagas", vagaRoutes);
 const inscricaoRoutes = require("./routes/inscricaoRoutes");
 app.use("/inscricoes", inscricaoRoutes);
 
-// Rota protegida com autenticação JWT e verificação de sessão
 app.use("/protegido", autenticar, (req, res) => {
   res.json({ mensagem: "Acesso autorizado!", usuario: req.usuario });
 });

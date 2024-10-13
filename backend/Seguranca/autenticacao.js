@@ -1,4 +1,3 @@
-// autenticacao.js
 const { assinar, verificarAssinatura } = require('./funcoesJWT');
 
 function autenticar(req, res) {

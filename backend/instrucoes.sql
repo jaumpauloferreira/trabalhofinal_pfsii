@@ -32,7 +32,6 @@ INSERT INTO candidato (cpf, nome, endereco, telefone) VALUES
 ('222.222.222-22', 'Ana Clara', 'Rua B, 456', '(11) 99999-2222'),
 ('333.333.333-33', 'Taisa Mariana', 'Rua C, 789', '(11) 99999-3333');
 
-
 INSERT INTO vaga (cargo, salario, cidade, quantidade) VALUES
 ('Desenvolvedor de Software', '5000', 'São Paulo', '1'),
 ('Programador FullStack', '6000', 'Rio de Janeiro', '2'),

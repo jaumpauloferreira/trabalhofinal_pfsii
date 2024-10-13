@@ -23,14 +23,12 @@ class Vaga {
     async filtrar({ cargo }) {
         try {
             const sql = `SELECT * FROM vaga WHERE cargo LIKE '%${cargo}%'`;
-
-            // Assuming ExecutaComando accepts parameters and returns a promise
             let vagas = await banco.ExecutaComando(sql);
 
             return vagas;
         } catch (error) {
             console.error(error);
-            throw error; // Optionally rethrow the error for the calling code to handle
+            throw error; 
         }
     }
 
